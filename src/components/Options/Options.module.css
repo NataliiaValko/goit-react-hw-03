@@ -4,6 +4,7 @@
   justify-content: center;
   padding: 8px 16px;
   background-color: rgb(209, 232, 254);
+  text-transform: capitalize;
 }
 
 .wrapper {
