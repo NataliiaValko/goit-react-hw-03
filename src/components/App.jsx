@@ -23,11 +23,11 @@ function App() {
     localStorage.setItem(LS_KEY_OPTIONS, JSON.stringify(options));
   }, [options]);
 
-  const onClickOption = option => {
+  const handleClickOption = option => {
     setOptions(prev => ({ ...prev, [option]: prev[option] + 1 }));
   };
 
-  const onClickReset = () => {
+  const handleClickReset = () => {
     setOptions(initialState);
   };
 
@@ -46,8 +46,8 @@ function App() {
       <Description />
 
       <Options
-        onClickReset={onClickReset}
-        onClickOption={onClickOption}
+        onClickReset={handleClickReset}
+        onClickOption={handleClickOption}
         options={options}
         total={getTotalFeedback()}
       />
