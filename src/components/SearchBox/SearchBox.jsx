@@ -1,7 +1,7 @@
 import styles from './SearchBox.module.css';
 
-const SearchBox = ({ filter, changeFilter }) => {
-  const handleChange = ({ target: { value } }) => changeFilter(value);
+const SearchBox = ({ filter, onChangeFilter }) => {
+  const handleChange = ({ target: { value } }) => onChangeFilter(value);
 
   return (
     <>
