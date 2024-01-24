@@ -1,67 +1,59 @@
 import { useEffect, useState } from 'react';
+
 import './App.css';
-import Description from './Description/Description';
-import Options from './Options/Options';
-import Feedback from './Feedback/Feedback';
-import Notification from './Notification/Notification';
+import ContactList from './ContactList/ContactList';
+import SearchBox from './SearchBox/SearchBox';
+import ContactForm from './ContactForm/ContactForm';
 
-const initialState = {
-  good: 0,
-  neutral: 0,
-  bad: 0,
-};
+const initialContacts = [
+  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+];
 
-const LS_KEY_OPTIONS = 'LS_KEY_OPTIONS';
+const LS_KEY_CONTACTS = 'LS_KEY_CONTACTS';
 
 function App() {
-  const [options, setOptions] = useState(() => {
-    const data = localStorage.getItem(LS_KEY_OPTIONS);
-    return data ? JSON.parse(data) : initialState;
+  const [contacts, setContacts] = useState(() => {
+    const data = localStorage.getItem(LS_KEY_CONTACTS);
+    return data ? JSON.parse(data) : initialContacts;
   });
 
+  const [filter, setFilter] = useState('');
+
   useEffect(() => {
-    localStorage.setItem(LS_KEY_OPTIONS, JSON.stringify(options));
-  }, [options]);
+    localStorage.setItem(LS_KEY_CONTACTS, JSON.stringify(contacts));
+  }, [contacts]);
 
-  const handleClickOption = option => {
-    setOptions(prev => ({ ...prev, [option]: prev[option] + 1 }));
+  const changeFilter = filter => {
+    setFilter(filter);
   };
 
-  const handleClickReset = () => {
-    setOptions(initialState);
+  const getVisibleContacts = () => {
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.toLowerCase().trim())
+    );
   };
 
-  const getTotalFeedback = () => {
-    const { good, neutral, bad } = options;
-    return good + neutral + bad;
+  const deleteContact = deletedId => {
+    setContacts(prev => prev.filter(({ id }) => id !== deletedId));
   };
 
-  const getPositiveFeedback = () => {
-    const { good, neutral } = options;
-    return Math.round(((good + neutral) / getTotalFeedback()) * 100);
+  const addContact = contact => {
+    setContacts(prev => [...prev, contact]);
   };
 
   return (
-    <>
-      <Description />
-
-      <Options
-        onClickReset={handleClickReset}
-        onClickOption={handleClickOption}
-        options={options}
-        total={getTotalFeedback()}
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={addContact} />
+      <SearchBox filter={filter} onChangeFilter={changeFilter} />
+      <ContactList
+        contacts={getVisibleContacts()}
+        deleteContact={deleteContact}
       />
-
-      {getTotalFeedback() > 0 ? (
-        <Feedback
-          options={options}
-          total={getTotalFeedback()}
-          positiveFeedback={getPositiveFeedback()}
-        />
-      ) : (
-        <Notification />
-      )}
-    </>
+    </div>
   );
 }
 
